@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { EnrollmentComponent } from './enrollment/enrollment.component';
+import { EnrollmentComponent } from './enrollment.component';
 
 const routes: Routes = [
     {

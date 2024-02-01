@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { EnrollmentRoutingModule } from './enrollment-routing.module';
-import { EnrollmentComponent } from './enrollment/enrollment.component';
+import { EnrollmentComponent } from './enrollment.component';
 
 
 @NgModule({

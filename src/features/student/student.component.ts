@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { StudentFormComponent } from './dialogs/student-form/student-form.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmationDialogComponent } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
-import { StudentService } from '../../core/services/student.service';
+import { StudentService } from './service/student.service';
 
 @Component({
     selector: 'app-student',

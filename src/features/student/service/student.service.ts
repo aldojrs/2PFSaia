@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Student } from '../../features/student/models';
+import { Student } from '../models';
 
 @Injectable({
     providedIn: 'root'
@@ -68,12 +68,12 @@ export class StudentService {
             throw new Error(`El número de documento: ${student.documentNro} ya existe`);
         }
 
-        student.id = this.getUniqueId(student);
+        student.id = this.getUniqueId();
         student.registrationDate = Date.now();
         this.students = [...this.students, student];
     }
 
-    private getUniqueId(student: Student): number {
+    private getUniqueId(): number {
         const maxId = Math.max(...this.students.map(s => s.id));
         return maxId + 1;
     }
