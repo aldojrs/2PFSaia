@@ -6,11 +6,13 @@ import { StudentFormComponent } from './dialogs/student-form/student-form.compon
 import { MaterialModule } from '../../material/material.module';
 import { SharedModule } from '../../shared/shared.module';
 import { StudentRoutingModule } from './student-routing.module';
+import { StudentDetailComponent } from './dialogs/student-detail/student-detail.component';
 
 @NgModule({
   declarations: [
     StudentComponent,
-    StudentFormComponent
+    StudentFormComponent,
+    StudentDetailComponent,
   ],
   imports: [
     CommonModule,

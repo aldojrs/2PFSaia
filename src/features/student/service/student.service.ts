@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Student } from '../models';
+import { Observable, delay, of, throwError } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -57,20 +58,22 @@ export class StudentService {
         },
     ];
 
-    getStudents(): Student[] {
-        return this.students;
+    getStudents(): Observable<Student[]> {
+        return of(this.students).pipe(delay(1000));
     }
 
-    addStudent(student: Student): void {
-
+    addStudent(student: Student): Observable<Student[]> {
         const existingStudent = this.students.find(s => s.documentNro === student.documentNro);
         if (existingStudent) {
-            throw new Error(`El número de documento: ${student.documentNro} ya existe`);
+            const err = new Error(`El número de documento: ${student.documentNro} ya existe`);
+            return throwError(() => err);
         }
 
         student.id = this.getUniqueId();
         student.registrationDate = Date.now();
         this.students = [...this.students, student];
+
+        return this.getStudents();
     }
 
     private getUniqueId(): number {
@@ -78,20 +81,23 @@ export class StudentService {
         return maxId + 1;
     }
 
-    editStudent(student: Student): void {
-
+    editStudent(student: Student): Observable<Student[]> {
         const existingStudent = this.students.find(s => s.documentNro === student.documentNro);
         if (existingStudent && existingStudent.id !== student.id) {
-            throw new Error(`El número de documento: ${student.documentNro} ya existe`);
+            const err = new Error(`El número de documento: ${student.documentNro} ya existe`);
+            return throwError(() => err);
         }
 
         this.students = this.students.filter(s => s.id !== student.id);
         this.students = [...this.students, student];
         this.students.sort((a, b) => a.id - b.id);
+
+        return this.getStudents();
     }
 
-    deleteStudent(studentId: number): void {
+    deleteStudent(studentId: number): Observable<Student[]> {
         this.students = this.students.filter(s => s.id !== studentId);
+        return this.getStudents();
     }
 
 }
