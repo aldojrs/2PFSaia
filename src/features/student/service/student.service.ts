@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Student } from '../models';
-import { Observable, delay, of, throwError } from 'rxjs';
+import { Observable, delay, mergeMap, of, throwError } from 'rxjs';
+import { EnrollmentService } from '../../enrollment/service/enrollment.service';
+import { Enrollment } from '../../enrollment/models';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +16,7 @@ export class StudentService {
             lastName: 'Perez',
             documentNro: 12345678,
             email: 'jp@mail.com',
-            registrationDate: new Date().setFullYear(2023, 5, 12),
+            registrationDate: new Date(2023, 5, 12),
         },
         {
             id: 2,
@@ -22,7 +24,7 @@ export class StudentService {
             lastName: 'Gomez',
             documentNro: 87344321,
             email: 'jg@mail.com',
-            registrationDate: new Date().setFullYear(2023, 0, 10),
+            registrationDate: new Date(2023, 0, 10),
         },
         {
             id: 3,
@@ -30,7 +32,7 @@ export class StudentService {
             lastName: 'Gonzalez',
             documentNro: 12345658,
             email: 'mg@mail.com',
-            registrationDate: new Date().setFullYear(2023, 2, 25),
+            registrationDate: new Date(2023, 2, 25),
         },
         {
             id: 4,
@@ -38,7 +40,7 @@ export class StudentService {
             lastName: 'Moreno',
             documentNro: 87654321,
             email: 'lm@mail.com',
-            registrationDate: new Date().setFullYear(2023, 8, 8),
+            registrationDate: new Date(2023, 8, 8),
         },
         {
             id: 5,
@@ -46,7 +48,7 @@ export class StudentService {
             lastName: 'Maradona',
             documentNro: 12392678,
             email: 'diego@mail.com',
-            registrationDate: new Date().setFullYear(2023, 4, 30),
+            registrationDate: new Date(2023, 4, 30),
         },
         {
             id: 6,
@@ -54,12 +56,27 @@ export class StudentService {
             lastName: 'Messi',
             documentNro: 87659521,
             email: 'lionel@mail.com',
-            registrationDate: new Date().setFullYear(2023, 6, 24),
+            registrationDate: new Date(2023, 6, 24),
         },
     ];
 
+    constructor(private enrollmentService: EnrollmentService) { }
+
     getStudents(): Observable<Student[]> {
         return of(this.students).pipe(delay(1000));
+    }
+
+    getStudentByIds(studentIds: number[]): Observable<Student[]> {
+        return of(this.students.filter(s => studentIds.includes(s.id))).pipe(delay(1000));
+    }
+
+    getStudentsByCourseId(courseId: number): Observable<Student[]> {
+        return this.enrollmentService.getEnrollmentsByCourseId(courseId).pipe(
+            mergeMap((enrollments: Enrollment[]) => {
+                const studentIds = enrollments.map((enrollment) => enrollment.studentId);
+                return this.getStudentByIds(studentIds);
+            })
+        );
     }
 
     addStudent(student: Student): Observable<Student[]> {
@@ -70,7 +87,7 @@ export class StudentService {
         }
 
         student.id = this.getUniqueId();
-        student.registrationDate = Date.now();
+        student.registrationDate = new Date();
         this.students = [...this.students, student];
 
         return this.getStudents();

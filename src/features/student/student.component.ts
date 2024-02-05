@@ -26,36 +26,9 @@ export class StudentComponent implements OnInit {
 
     private loadData(): void {
         this.loadingService.setIsLoading(true);
-        this.studentService.getStudents().subscribe({
-            next: (students) => {
-                this.dataSource = [...students];
-                this.loadingService.setIsLoading(false);
-            }
-        });
-    }
-
-    deleteStudent(student: Student) {
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            data: {
-                message: 'Desea eliminar el estudiante?',
-                buttonText: {
-                    ok: 'Aceptar',
-                    cancel: 'Cancelar'
-                }
-            }
-        });
-
-        dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-            if (confirmed) {
-                this.loadingService.setIsLoading(true);
-                this.studentService.deleteStudent(student.id).subscribe({
-                    next: (result) => {
-                        this.dataSource = result;
-                        this.loadingService.setIsLoading(false)
-                        this._snackBar.open('Estudiante eliminado correctamente', 'Ok', { duration: 3000 });
-                    }
-                });
-            }
+        this.studentService.getStudents().subscribe((students) => {
+            this.dataSource = [...students];
+            this.loadingService.setIsLoading(false);
         });
     }
 
@@ -82,7 +55,7 @@ export class StudentComponent implements OnInit {
                     next: (result) => {
                         this.dataSource = result;
                         this.loadingService.setIsLoading(false);
-                        this._snackBar.open('Estudiante actualizado correctamente', 'Ok', { duration: 3000 });
+                        this._snackBar.open('Alumno actualizado correctamente', 'Ok', { duration: 3000 });
                     },
                     error: (error) => {
                         this._snackBar.open(error, 'Ok', { duration: 3000 });
@@ -94,12 +67,35 @@ export class StudentComponent implements OnInit {
                     next: (result) => {
                         this.dataSource = result;
                         this.loadingService.setIsLoading(false)
-                        this._snackBar.open('Estudiante agregado correctamente', 'Ok', { duration: 3000 });
+                        this._snackBar.open('Alumno agregado correctamente', 'Ok', { duration: 3000 });
                     },
                     error: (error) => {
                         this._snackBar.open(error, 'Ok', { duration: 3000 });
                         this.loadingService.setIsLoading(false);
                     }
+                });
+            }
+        });
+    }
+
+    deleteStudent(student: Student) {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            data: {
+                message: 'Desea eliminar el alumno?',
+                buttonText: {
+                    ok: 'Aceptar',
+                    cancel: 'Cancelar'
+                }
+            }
+        });
+
+        dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+            if (confirmed) {
+                this.loadingService.setIsLoading(true);
+                this.studentService.deleteStudent(student.id).subscribe((result) => {
+                    this.dataSource = result;
+                    this.loadingService.setIsLoading(false)
+                    this._snackBar.open('Alumno eliminado correctamente', 'Ok', { duration: 3000 });
                 });
             }
         });
